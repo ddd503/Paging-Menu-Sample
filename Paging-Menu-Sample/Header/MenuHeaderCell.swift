@@ -15,4 +15,9 @@ class MenuHeaderCell: UICollectionViewCell {
     func setInfo(title: String) {
         titleLabel.text = title
     }
+    /// タイトルカラーを変更する
+    /// - Parameter color: タイトルカラー
+    func setTitleColor(_ color: UIColor) {
+        titleLabel.textColor = color
+    }
 }

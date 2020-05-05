@@ -49,21 +49,34 @@ class MenuHeaderView: UIView {
     // Viewのレイアウト完了後のタイミング（サイズが確定している想定）
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        // 初期表示時は(0,0)のセルに下線引く
-        let cell = menuView.cellForItem(at: IndexPath(item: 0, section: 0)) as! MenuHeaderCell
+        // 見た目調整
+        let firstSelectIndexPath = IndexPath(item: 0, section: 0)
+        guard let firstSelectCell = menuView.cellForItem(at: firstSelectIndexPath) as? MenuHeaderCell else { return }
+
         let bottomLineViewHeight = CGFloat(2)
         bottomLineView.frame = CGRect(x: 0,
                                       y: menuView.frame.height - bottomLineViewHeight,
-                                      width: cell.frame.width,
+                                      width: firstSelectCell.frame.width,
                                       height: bottomLineViewHeight)
+
+        firstSelectCell.setTitleColor(.red)
+
+        // 見た目だけでなく内部状態も初期表示の時点で選択状態にしておく
+        menuView.selectItem(at: firstSelectIndexPath, animated: false, scrollPosition: .init())
     }
 
     /// Menu.idを渡して任意のMenuを選択させる
     /// - Parameter menuId: Menu.id
     func selectMenu(at menuId: Int) {
         let result = menus.firstIndex { $0.id == menuId }
-        guard let firstIndex = result else { return }
-        collectionView(menuView, didSelectItemAt: IndexPath(item: firstIndex, section: 0))
+        guard let firstIndex = result, let currentSelectIndexPath = menuView.indexPathsForSelectedItems?.first else { return }
+
+        menuView.deselectItem(at: currentSelectIndexPath, animated: false)
+        collectionView(menuView, didDeselectItemAt: currentSelectIndexPath)
+
+        let nextSelectIndexPath = IndexPath(item: firstIndex, section: 0)
+        menuView.selectItem(at: nextSelectIndexPath, animated: true, scrollPosition: .init())
+        collectionView(menuView, didSelectItemAt: nextSelectIndexPath)
     }
 }
 
@@ -75,6 +88,9 @@ extension MenuHeaderView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MenuHeaderCell.identifier, for: indexPath) as! MenuHeaderCell
         cell.setInfo(title: menus[indexPath.row].title)
+        // 選択中のセルはタイトル赤色、それ以外は黒色（else側は再利用対応）
+        let titleColor: UIColor = menuView.indexPathsForSelectedItems?.first == indexPath ? .red : .black
+        cell.setTitleColor(titleColor)
         return cell
     }
 }
@@ -86,11 +102,18 @@ extension MenuHeaderView: UICollectionViewDelegate {
 
         delegate?.didSelectMenu(menus[indexPath.item])
 
-        let cell = menuView.cellForItem(at: indexPath) as! MenuHeaderCell
+        guard let selectCell = menuView.cellForItem(at: indexPath) as? MenuHeaderCell else { return }
+
+        selectCell.setTitleColor(.red)
 
         UIView.animate(withDuration: 0.2) { [unowned self] in
-            self.bottomLineView.frame.origin.x = cell.frame.origin.x
-            self.bottomLineView.frame.size.width = cell.frame.width
+            self.bottomLineView.frame.origin.x = selectCell.frame.origin.x
+            self.bottomLineView.frame.size.width = selectCell.frame.width
         }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        guard let deSelectCell = menuView.cellForItem(at: indexPath) as? MenuHeaderCell else { return }
+        deSelectCell.setTitleColor(.black)
     }
 }
