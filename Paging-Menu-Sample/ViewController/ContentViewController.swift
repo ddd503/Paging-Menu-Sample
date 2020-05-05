@@ -25,6 +25,10 @@ class ContentViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         centerTitleLabel.text = centerTitle
+        let topBorder = CALayer()
+        topBorder.frame = CGRect(origin: .zero, size: CGSize(width: view.bounds.width, height: 1))
+        topBorder.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5).cgColor
+        view.layer.addSublayer(topBorder)
     }
 
 }

@@ -25,25 +25,26 @@ class MenuHeaderView: UIView {
             layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
             layout.scrollDirection = .horizontal
             menuView.collectionViewLayout = layout
-            menuView.addSubview(bottomLineView)
         }
     }
 
-    static func make(frame: CGRect, menus: [Menu]) -> MenuHeaderView {
+    /// イニシャライザ
+    /// - Parameters:
+    ///   - frame: frame
+    ///   - menus: リスト表示するメニューの配列
+    ///   - selectMenuTitleColor: 選択中のメニュータイトルの色
+    static func make(frame: CGRect, menus: [Menu], selectMenuTitleColor: UIColor = .red) -> MenuHeaderView {
         let view = UINib(nibName: "MenuHeaderView", bundle: nil)
             .instantiate(withOwner: nil, options: nil).first as! MenuHeaderView
         view.frame = frame
         view.menus = menus
+        view.selectMenuTitleColor = selectMenuTitleColor
         return view
     }
 
-    private var bottomLineView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .red
-        return view
-    }()
-
+    private var bottomLineView = UIView()
     private var menus = [Menu]()
+    private var selectMenuTitleColor = UIColor.black
     weak var delegate: MenuHeaderViewDelegate?
 
     // Viewのレイアウト完了後のタイミング（サイズが確定している想定）
@@ -58,8 +59,10 @@ class MenuHeaderView: UIView {
                                       y: menuView.frame.height - bottomLineViewHeight,
                                       width: firstSelectCell.frame.width,
                                       height: bottomLineViewHeight)
+        bottomLineView.backgroundColor = selectMenuTitleColor
+        menuView.addSubview(bottomLineView)
 
-        firstSelectCell.setTitleColor(.red)
+        firstSelectCell.setTitleColor(selectMenuTitleColor)
 
         // 見た目だけでなく内部状態も初期表示の時点で選択状態にしておく
         menuView.selectItem(at: firstSelectIndexPath, animated: false, scrollPosition: .init())
@@ -89,7 +92,7 @@ extension MenuHeaderView: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MenuHeaderCell.identifier, for: indexPath) as! MenuHeaderCell
         cell.setInfo(title: menus[indexPath.row].title)
         // 選択中のセルはタイトル赤色、それ以外は黒色（else側は再利用対応）
-        let titleColor: UIColor = menuView.indexPathsForSelectedItems?.first == indexPath ? .red : .black
+        let titleColor: UIColor = menuView.indexPathsForSelectedItems?.first == indexPath ? selectMenuTitleColor : .black
         cell.setTitleColor(titleColor)
         return cell
     }
@@ -104,7 +107,7 @@ extension MenuHeaderView: UICollectionViewDelegate {
 
         guard let selectCell = menuView.cellForItem(at: indexPath) as? MenuHeaderCell else { return }
 
-        selectCell.setTitleColor(.red)
+        selectCell.setTitleColor(selectMenuTitleColor)
 
         UIView.animate(withDuration: 0.2) { [unowned self] in
             self.bottomLineView.frame.origin.x = selectCell.frame.origin.x
