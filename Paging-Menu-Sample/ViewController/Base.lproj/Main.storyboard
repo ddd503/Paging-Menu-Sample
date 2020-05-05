@@ -22,12 +22,22 @@
                                     <constraint firstAttribute="height" constant="60" id="c0q-ZQ-394"/>
                                 </constraints>
                             </view>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fq4-Vq-ecK">
+                                <rect key="frame" x="0.0" y="148" width="414" height="748"/>
+                                <connections>
+                                    <segue destination="sax-Hc-3Kz" kind="embed" identifier="EmbedPageVC" id="4qb-24-JMT"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="2iu-6n-Tdj" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="36F-xT-FUT"/>
                             <constraint firstItem="2iu-6n-Tdj" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="5XR-d8-bQH"/>
                             <constraint firstItem="2iu-6n-Tdj" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="9GG-hC-hn8"/>
+                            <constraint firstAttribute="bottom" secondItem="fq4-Vq-ecK" secondAttribute="bottom" id="C2B-dT-TxZ"/>
+                            <constraint firstItem="fq4-Vq-ecK" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="a26-k3-uFl"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fq4-Vq-ecK" secondAttribute="trailing" id="bPg-uY-btT"/>
+                            <constraint firstItem="fq4-Vq-ecK" firstAttribute="top" secondItem="2iu-6n-Tdj" secondAttribute="bottom" id="j3p-49-d7V"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -39,6 +49,14 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1047.8260869565217" y="126.5625"/>
+        </scene>
+        <!--Page View Controller-->
+        <scene sceneID="dl7-fU-0p9">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="sax-Hc-3Kz" customClass="PageViewController" customModule="Paging_Menu_Sample" customModuleProvider="target" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VTA-l1-eae" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1862" y="130"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="80F-7Q-8k1">

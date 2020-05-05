@@ -48,13 +48,20 @@ class MenuHeaderView: UIView {
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         // 初期表示時は(0,0)のセルに下線引く
-//        let cell = menuView.dequeueReusableCell(withReuseIdentifier: MenuHeaderCell.identifier, for: IndexPath(item: 0, section: 0)) as! MenuHeaderCell
         let cell = menuView.cellForItem(at: IndexPath(item: 0, section: 0)) as! MenuHeaderCell
         let bottomLineViewHeight = CGFloat(2)
         bottomLineView.frame = CGRect(x: 0,
                                       y: menuView.frame.height - bottomLineViewHeight,
                                       width: cell.frame.width,
                                       height: bottomLineViewHeight)
+    }
+
+    /// Menu.idを渡して任意のMenuを選択させる
+    /// - Parameter menuId: Menu.id
+    func selectMenu(at menuId: Int) {
+        let result = menus.firstIndex { $0.id == menuId }
+        guard let firstIndex = result else { return }
+        collectionView(menuView, didSelectItemAt: IndexPath(item: firstIndex, section: 0))
     }
 }
 

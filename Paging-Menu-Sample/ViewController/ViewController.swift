@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak private var menuHeaderBaseView: UIView!
+    private var menuHeaderView: MenuHeaderView!
 
     let menus: [Menu] = {
         [Menu(id: 0, title: "野球部"),
@@ -25,9 +26,30 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let menuHeaderView = MenuHeaderView.make(frame: CGRect(origin: .zero, size: menuHeaderBaseView.frame.size), menus: menus)
+        menuHeaderView = MenuHeaderView.make(frame: CGRect(origin: .zero, size: menuHeaderBaseView.frame.size), menus: menus)
         menuHeaderBaseView.addSubview(menuHeaderView)
     }
 
+    // コンテナView内部VCの処理（初期設定等）
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let pageVC = segue.destination as? PageViewController,
+            segue.identifier == "EmbedPageVC" else {
+            return
+        }
+        let firstMenuId = menus.map { $0.id }.sorted { $0 < $1 }.min() ?? 0
+        var contentVCDicAtMenuId: [Int : ContentViewController] = [:]
+        menus.forEach {
+            let contentVC = ContentViewController(centerTitle: $0.title)
+            contentVC.view.tag = $0.id
+            contentVCDicAtMenuId[$0.id] = contentVC
+        }
+        pageVC.setup(firstMenuId: firstMenuId, contentVCDicAtMenuId: contentVCDicAtMenuId)
+        pageVC.pageViewControllerDelegate = self
+    }
 }
 
+extension ViewController: PageViewControllerDelegate {
+    func didPagingForSwipe(pageNumber: Int) {
+        menuHeaderView.selectMenu(at: pageNumber)
+    }
+}
