@@ -32,40 +32,54 @@ class MenuHeaderView: UIView {
     /// - Parameters:
     ///   - frame: frame
     ///   - menus: リスト表示するメニューの配列
+    ///   - firstSelectMenuIndex: 初期表示時に選択されているmenus内のIndex
     ///   - selectMenuTitleColor: 選択中のメニュータイトルの色
-    static func make(frame: CGRect, menus: [Menu], selectMenuTitleColor: UIColor = .red) -> MenuHeaderView {
+    static func make(frame: CGRect, menus: [Menu], firstSelectMenuIndex: Int, selectMenuTitleColor: UIColor) -> MenuHeaderView {
         let view = UINib(nibName: "MenuHeaderView", bundle: nil)
             .instantiate(withOwner: nil, options: nil).first as! MenuHeaderView
         view.frame = frame
         view.menus = menus
+        view.firstSelectMenuIndex = firstSelectMenuIndex
         view.selectMenuTitleColor = selectMenuTitleColor
         return view
     }
 
     private var bottomLineView = UIView()
     private var menus = [Menu]()
+    private var firstSelectMenuIndex = 0
     private var selectMenuTitleColor = UIColor.black
     weak var delegate: MenuHeaderViewDelegate?
 
     // Viewのレイアウト完了後のタイミング（サイズが確定している想定）
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        // 見た目調整
-        let firstSelectIndexPath = IndexPath(item: 0, section: 0)
-        guard let firstSelectCell = menuView.cellForItem(at: firstSelectIndexPath) as? MenuHeaderCell else { return }
 
-        let bottomLineViewHeight = CGFloat(2)
-        bottomLineView.frame = CGRect(x: 0,
-                                      y: menuView.frame.height - bottomLineViewHeight,
-                                      width: firstSelectCell.frame.width,
-                                      height: bottomLineViewHeight)
-        bottomLineView.backgroundColor = selectMenuTitleColor
-        menuView.addSubview(bottomLineView)
+        let firstSelectIndexPath = IndexPath(item: firstSelectMenuIndex, section: 0)
+        // 初期表示時のメニュー選択
+        // 画面に表示されていないセルを初期選択表示させたい時は、scrollPositionで動かせばcellForItemAtが走るため選択済みのセルの色が反映されるため必須
+        // 既に表示中の場合は遷移移動でのcellForItemAtは走らないので自前で色指定必要
+        menuView.selectItem(at: firstSelectIndexPath, animated: false, scrollPosition: .centeredHorizontally)
 
-        firstSelectCell.setTitleColor(selectMenuTitleColor)
+        // セル下に選択状態を表す線Viewを追加
+        let addBottomLineView: (UICollectionViewCell) -> ()  = { [unowned self] cell in
+            let bottomLineViewHeight = CGFloat(2)
+            self.bottomLineView.frame = CGRect(x: cell.frame.origin.x,
+                                               y: self.menuView.frame.height - bottomLineViewHeight,
+                                               width: cell.frame.width,
+                                               height: bottomLineViewHeight)
+            self.bottomLineView.backgroundColor = self.selectMenuTitleColor
+            self.menuView.addSubview(self.bottomLineView)
+        }
 
-        // 見た目だけでなく内部状態も初期表示の時点で選択状態にしておく
-        menuView.selectItem(at: firstSelectIndexPath, animated: false, scrollPosition: .init())
+        if let firstSelectCell = menuView.cellForItem(at: firstSelectIndexPath) as? MenuHeaderCell {
+            // 表示されているセルを使用
+            firstSelectCell.setTitleColor(selectMenuTitleColor)
+            addBottomLineView(firstSelectCell)
+        } else if let firstSelectCell = menuView.dequeueReusableCell(withReuseIdentifier: MenuHeaderCell.identifier,
+                                                                     for: firstSelectIndexPath) as? MenuHeaderCell {
+            // 該当のセルが表示されていないため再利用で作り直して使う
+            addBottomLineView(firstSelectCell)
+        }
     }
 
     /// Menu.idを渡して任意のMenuを選択させる

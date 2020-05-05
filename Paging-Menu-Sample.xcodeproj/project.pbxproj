@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4525C3DC24616FB0008E3A8E /* Array+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4525C3DB24616FB0008E3A8E /* Array+.swift */; };
 		4562FBA724609CB100EE5427 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4562FBA624609CB100EE5427 /* PageViewController.swift */; };
 		4562FBAA24609CE100EE5427 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4562FBA824609CE100EE5427 /* ContentViewController.swift */; };
 		4562FBAB24609CE100EE5427 /* ContentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4562FBA924609CE100EE5427 /* ContentViewController.xib */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4525C3DB24616FB0008E3A8E /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		4562FBA624609CB100EE5427 /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		4562FBA824609CE100EE5427 /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		4562FBA924609CE100EE5427 /* ContentViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ContentViewController.xib; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 				457B375C24609083005EDEF8 /* LaunchScreen.storyboard */,
 				457B375F24609083005EDEF8 /* Info.plist */,
 				457B376524609155005EDEF8 /* UIView+XIB.swift */,
+				4525C3DB24616FB0008E3A8E /* Array+.swift */,
 			);
 			path = "Paging-Menu-Sample";
 			sourceTree = "<group>";
@@ -201,6 +204,7 @@
 				457B376624609155005EDEF8 /* UIView+XIB.swift in Sources */,
 				457B375424609081005EDEF8 /* SceneDelegate.swift in Sources */,
 				4562FBA724609CB100EE5427 /* PageViewController.swift in Sources */,
+				4525C3DC24616FB0008E3A8E /* Array+.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

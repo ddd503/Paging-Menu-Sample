@@ -17,41 +17,44 @@ protocol PageViewControllerDelegate: AnyObject {
 class PageViewController: UIPageViewController {
 
     // ページングするVCの管理用
-    private var contentVCDicAtMenuId: [Int : ContentViewController] = [:]
+    private var vcArray = [UIViewController]()
+    private var pageIndex = 0
     weak var pageViewControllerDelegate: PageViewControllerDelegate?
 
-    func setup(firstMenuId: Int, contentVCDicAtMenuId: [Int : ContentViewController]) {
+    /// 初期設定
+    /// - Parameters:
+    ///   - vcArray: ページングさせるVCの配列
+    ///   - firstPageIndex: 最初に表示させるVC要素に関する配列内のIndex
+    func setup(vcArray: [UIViewController], firstPageIndex: Int) {
         self.dataSource = self
         self.delegate = self
-        self.contentVCDicAtMenuId = contentVCDicAtMenuId
-        guard let firstVC = self.contentVCDicAtMenuId[firstMenuId] else { return }
-        setViewControllers([firstVC], direction: .forward, animated: true, completion: nil)
+        self.vcArray = vcArray
+        pageIndex = firstPageIndex
+        setViewControllers([vcArray[firstPageIndex]], direction: .forward, animated: true, completion: nil)
     }
 
-    func setPage(at pageNumber: Int) {
-        guard let nextPage = contentVCDicAtMenuId[pageNumber],
-            let currentPage = viewControllers?.first else { return }
+    func setPage(at menuId: Int) {
+        guard let nextPageIndex = vcArray.firstIndex(where: { $0.view.tag == menuId }) else { return }
 
-        setViewControllers([nextPage], direction: nextPage.view.tag > currentPage.view.tag ? .forward : .reverse,
-                           animated: true, completion: nil)
+        let direction: NavigationDirection = nextPageIndex > pageIndex ? .forward : .reverse
+        pageIndex = nextPageIndex
+        setViewControllers([vcArray[nextPageIndex]], direction: direction, animated: true, completion: nil)
     }
 }
 
 extension PageViewController: UIPageViewControllerDataSource {
     // 右スワイプ
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        let result = contentVCDicAtMenuId
-            .filter { viewController.view.tag > $0.key } // 表示中のVCよりidが小さい(昇順なので右側)ものを絞る
-            .max { $0.key < $1.key } // 中で一番idが大きい（表示中のVCに近いページを持つdic）ものを確定
-        return result?.value
+        guard  let nextVC = vcArray[safe: pageIndex - 1] else { return nil }
+        pageIndex -= 1
+        return nextVC
     }
 
     // 左スワイプ
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        let result = contentVCDicAtMenuId
-            .filter { $0.key > viewController.view.tag } // 表示中のVCよりidが大きい(昇順なので左側)ものを絞る
-            .min { $0.key < $1.key } // 中で一番idが小さい（表示中のVCに近いページを持つdic）ものを確定
-        return result?.value
+        guard  let nextVC = vcArray[safe: pageIndex + 1] else { return nil }
+        pageIndex += 1
+        return nextVC
     }
 }
 
