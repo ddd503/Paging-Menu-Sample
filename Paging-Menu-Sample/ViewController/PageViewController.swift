@@ -27,6 +27,14 @@ class PageViewController: UIPageViewController {
         guard let firstVC = self.contentVCDicAtMenuId[firstMenuId] else { return }
         setViewControllers([firstVC], direction: .forward, animated: true, completion: nil)
     }
+
+    func setPage(at pageNumber: Int) {
+        guard let nextPage = contentVCDicAtMenuId[pageNumber],
+            let currentPage = viewControllers?.first else { return }
+
+        setViewControllers([nextPage], direction: nextPage.view.tag > currentPage.view.tag ? .forward : .reverse,
+                           animated: true, completion: nil)
+    }
 }
 
 extension PageViewController: UIPageViewControllerDataSource {

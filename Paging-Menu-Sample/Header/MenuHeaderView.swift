@@ -9,6 +9,8 @@
 import UIKit
 
 protocol MenuHeaderViewDelegate: AnyObject {
+    /// 任意のメニューが選択(タップ)された
+    /// - Parameter menu: 選択されたメニュー(Menu)
     func didSelectMenu(_ menu: Menu)
 }
 

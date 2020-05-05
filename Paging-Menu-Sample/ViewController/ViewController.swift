@@ -12,6 +12,7 @@ class ViewController: UIViewController {
 
     @IBOutlet weak private var menuHeaderBaseView: UIView!
     private var menuHeaderView: MenuHeaderView!
+    private var pageVC: PageViewController!
 
     let menus: [Menu] = {
         [Menu(id: 0, title: "野球部"),
@@ -27,6 +28,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         menuHeaderView = MenuHeaderView.make(frame: CGRect(origin: .zero, size: menuHeaderBaseView.frame.size), menus: menus)
+        menuHeaderView.delegate = self
         menuHeaderBaseView.addSubview(menuHeaderView)
     }
 
@@ -43,13 +45,21 @@ class ViewController: UIViewController {
             contentVC.view.tag = $0.id
             contentVCDicAtMenuId[$0.id] = contentVC
         }
-        pageVC.setup(firstMenuId: firstMenuId, contentVCDicAtMenuId: contentVCDicAtMenuId)
-        pageVC.pageViewControllerDelegate = self
+
+        self.pageVC = pageVC
+        self.pageVC.setup(firstMenuId: firstMenuId, contentVCDicAtMenuId: contentVCDicAtMenuId)
+        self.pageVC.pageViewControllerDelegate = self
     }
 }
 
 extension ViewController: PageViewControllerDelegate {
     func didPagingForSwipe(pageNumber: Int) {
         menuHeaderView.selectMenu(at: pageNumber)
+    }
+}
+
+extension ViewController: MenuHeaderViewDelegate {
+    func didSelectMenu(_ menu: Menu) {
+        pageVC.setPage(at: menu.id)
     }
 }
