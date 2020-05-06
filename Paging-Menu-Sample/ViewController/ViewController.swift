@@ -13,7 +13,6 @@ class ViewController: UIViewController {
     @IBOutlet weak private var menuHeaderBaseView: UIView!
     private var menuHeaderView: MenuHeaderView!
     private var pageVC: PageViewController!
-    private let firstSelectMenuIndex = 0
 
     let menus: [Menu] = {
         [Menu(id: 11, title: "野球部"),
@@ -32,7 +31,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         menuHeaderView = MenuHeaderView.make(frame: CGRect(origin: .zero, size: menuHeaderBaseView.frame.size),
                                              menus: menus,
-                                             firstSelectMenuIndex: firstSelectMenuIndex,
                                              selectMenuTitleColor: .red)
         menuHeaderView.delegate = self
         menuHeaderBaseView.addSubview(menuHeaderView)
@@ -51,7 +49,7 @@ class ViewController: UIViewController {
             let contentVC = ContentViewController(centerTitle: $0.title)
             contentVC.view.tag = $0.id
             return contentVC
-        }, firstPageIndex: firstSelectMenuIndex)
+        })
     }
 }
 

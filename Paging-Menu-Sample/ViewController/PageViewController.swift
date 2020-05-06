@@ -24,13 +24,11 @@ class PageViewController: UIPageViewController {
     /// 初期設定
     /// - Parameters:
     ///   - vcArray: ページングさせるVCの配列
-    ///   - firstPageIndex: 最初に表示させるVC要素に関する配列内のIndex
-    func setup(vcArray: [UIViewController], firstPageIndex: Int) {
+    func setup(vcArray: [UIViewController]) {
         self.dataSource = self
         self.delegate = self
         self.vcArray = vcArray
-        pageIndex = firstPageIndex
-        setViewControllers([vcArray[firstPageIndex]], direction: .forward, animated: true, completion: nil)
+        setViewControllers([vcArray[pageIndex]], direction: .forward, animated: true, completion: nil)
     }
 
     /// menuIdに対応するページに遷移する（ページングする、手動以外の遷移のために用意）
