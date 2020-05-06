@@ -56,13 +56,13 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: PageViewControllerDelegate {
-    func didPagingForSwipe(pageNumber: Int) {
-        menuHeaderView.selectMenu(at: pageNumber)
+    func didPagingForSwipe(pageId: Int) {
+        menuHeaderView.selectMenu(at: pageId)
     }
 }
 
 extension ViewController: MenuHeaderViewDelegate {
-    func didSelectMenu(_ menu: Menu) {
+    func didTapMenu(_ menu: Menu) {
         pageVC.setPage(at: menu.id)
     }
 }
